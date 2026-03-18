@@ -1,1 +1,1 @@
-# visulizado-perfil-github
+# visulizador-perfil-github
