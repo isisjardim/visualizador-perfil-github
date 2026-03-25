@@ -1,46 +1,36 @@
-import { getUser } from './services/user.js';
-import { screen } from './objects/screen.js';
+import { fetchGithubUser, fetchGithubUserRepos } from './githubAPI.js';
+import { renderProfile } from './profileView.js';
 
 const inputSearch = document.getElementById('input-search');
 const btnSearch = document.getElementById('btn-search');
+const profileResults = document.querySelector('.profile-results');
 
-btnSearch.addEventListener('click', () => {
+async function getUserProfile() {
     const userName = inputSearch.value;
-    if (validateInput(userName)) return;
-    getUserData(userName);
-});
+    if (!userName) {
+        alert('Por favor, digite um nome de usuário do GitHub.');
+        profileResults.innerHTML = "";
+        return;
+    }
+    profileResults.innerHTML = `<p class="loading">Carregando...</p>`;
+    try {
+        const userData = await fetchGithubUser(userName);
+        const userRepos = await fetchGithubUserRepos(userName);
+        renderProfile(userData, userRepos, profileResults);
+    } catch (error) {
+        console.error('Erro ao buscar o perfil do usuário:', error);
+        alert('Usuário não encontrado. Por favor, verifique o nome de usuário e tente novamente.');
+        profileResults.innerHTML = "";
+    }
+}
+
+btnSearch.addEventListener('click', getUserProfile);
 
 inputSearch.addEventListener('keyup', (e) => {
-    const userName = e.target.value;
     const key = e.which || e.keyCode;
     const isEnterKeyPressed = key === 13;
 
     if (isEnterKeyPressed) {
-        if (validateInput(userName)) return;
-        getUserData(userName);
+        getUserProfile();
     }
 });
-
-function validateInput(userName) {
-    if (userName.length === 0) {
-        alert('Preencha o campo com o nome do usuário do GitHub');
-        return true;
-    }
-}
-
-async function getUserData(userName) {
-    try {
-        const userData = await getUser(userName);
-
-        if (userData.message === "Not Found") {
-            screen.renderNotFound();
-            return;
-        }
-
-        screen.renderUser(userData);
-
-    } catch (error) {
-        console.error('Erro ao buscar o perfil do usuário:', error);
-        alert('Ocorreu um erro ao buscar o perfil do usuário. Por favor, tente novamente mais tarde.');
-    }
-}
