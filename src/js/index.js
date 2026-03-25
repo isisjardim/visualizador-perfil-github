@@ -27,10 +27,5 @@ async function getUserProfile() {
 btnSearch.addEventListener('click', getUserProfile);
 
 inputSearch.addEventListener('keyup', (e) => {
-    const key = e.which || e.keyCode;
-    const isEnterKeyPressed = key === 13;
-
-    if (isEnterKeyPressed) {
-        getUserProfile();
-    }
+    if (e.key === 'Enter') getUserProfile();
 });
