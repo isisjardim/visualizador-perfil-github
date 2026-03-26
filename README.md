@@ -1,5 +1,7 @@
 # 🔍 Visualizador de Perfil do GitHub
 
+🚀 Project focused on consuming APIs and building dynamic interfaces with JavaScript.
+
 Aplicação web que permite buscar usuários do GitHub e visualizar informações do perfil de forma simples e intuitiva.
 
 ## 🚀 Demo
